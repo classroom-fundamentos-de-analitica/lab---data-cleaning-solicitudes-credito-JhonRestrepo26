@@ -16,30 +16,31 @@ def clean_data():
     #
     # Inserte su código aquí
     #
+    df.dropna(axis=0, inplace = True)
     
-    #Columna monto:
 
     df.monto_del_credito = df.monto_del_credito.str.strip('$')
     df.monto_del_credito = df.monto_del_credito.str.replace('\.00','')
     df.monto_del_credito = df.monto_del_credito.str.replace(',','')
+    df.monto_del_credito = df.monto_del_credito.astype(int)
     
     #Fechas:
 
-    df.fecha_de_beneficio=pd.to_datetime(df.fecha_de_beneficio)
+    df.fecha_de_beneficio=pd.to_datetime(df.fecha_de_beneficio, dayfirst=True)
     
-    #Comunas como entero
-    df['comuna_ciudadano'] = df['comuna_ciudadano'].astype(int)
+    #Comunas como flotante
+    df['comuna_ciudadano'] = df['comuna_ciudadano'].astype(float)
     
-    # Minúsculas todo lo que sea texto:
+    # Minúsculas todo lo que sea texto, además quitar guiones:
 
     col_texts=['sexo','tipo_de_emprendimiento','idea_negocio','barrio','línea_credito']
 
     for i in col_texts:
-      df[i]=df[i].str.lower()
+      df[i]=df[i].str.lower()           #May en min
+      df[i]=df[i].str.replace('_',' ')  #Espaciado
+      df[i]=df[i].str.replace('-',' ')
     
-    #Eliminar duplicados y NAN's
-
-    df.dropna(axis = 0, inplace = True)
+    #Duplicados
     df.drop_duplicates(inplace = True)
     
     return df
